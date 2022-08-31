@@ -14,6 +14,9 @@ const KeypadComponent = ({ inputValue, inputChange }) => {
       inputValue += btn
       inputChange(inputValue)
     } else {
+      if(btn === 'C' && inputValue === '') {
+        controller('CE', dispatch, inputValue)
+      }
       controller(btn, dispatch, inputValue)
       inputChange('')
     }

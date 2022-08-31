@@ -97,7 +97,7 @@ const calculate = (state = DEFAULT_STATE, { type, payload }) => {
       expression = ''
       return {
         ...state,
-        result: +calculator.value.toFixed(3),
+        result: +calculator.value,
         expressions,
       }
     case CLEAR:
