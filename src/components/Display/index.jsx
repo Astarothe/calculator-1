@@ -33,6 +33,5 @@ export const DisplayComponent = ({ inputValue, inputPlaceholder, inputChange }) 
 
 DisplayComponent.propTypes = {
   inputValue: PropTypes.string.isRequired,
-  inputPlaceholder: PropTypes.number.isRequired,
   inputChange: PropTypes.func.isRequired,
 }

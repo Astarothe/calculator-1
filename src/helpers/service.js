@@ -5,7 +5,7 @@ class Calculator {
   }
 
   executeCommand (command) {
-    this.value = command.execute(this.value).toFixed(3)
+    this.value = command.execute(this.value)
     this.history.push(command)
   }
 

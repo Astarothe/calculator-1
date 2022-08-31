@@ -11,9 +11,11 @@ const DEFAULT_STATE = {
 let operands = []
 let expression = ''
 let expressions = []
+let count = 0
 
 const createExpression = (operand, num) => {
-  expression += `${calculator.value} ${operand} ${num}`
+  expression += `${count === 0 ? calculator.value : ''} ${operand} ${num}`
+  count++
 }
 
 const checkOperands = (operand, num) => {
@@ -75,7 +77,7 @@ const calculate = (state = DEFAULT_STATE, { type, payload }) => {
       operands.push('/')
       return {
         ...state,
-        result: calculator.value,
+        result: calculator.value.toFixed(3),
       }
     case SIGN_CHANGE:
       calculator.executeCommand(new SignChangeCommand(+payload))
@@ -95,9 +97,10 @@ const calculate = (state = DEFAULT_STATE, { type, payload }) => {
       operands.pop()
       expressions.push(expression)
       expression = ''
+      count = 0
       return {
         ...state,
-        result: +calculator.value,
+        result: +calculator.value.toFixed(3),
         expressions,
       }
     case CLEAR:

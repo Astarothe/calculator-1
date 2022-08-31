@@ -77,7 +77,6 @@ CalculatorComponent.propTypes = {
 DisplayComponent.propTypes = {
   inputValue: PropTypes.string.isRequired,
   inputChange: PropTypes.func.isRequired,
-  inputPlaceholder: PropTypes.number.isRequired,
 }
 
 KeypadComponent.propTypes = {
