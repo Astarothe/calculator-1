@@ -15,13 +15,14 @@ export const Button = styled.button`
 `
 
 export const Wrapper = styled.div`
+  grid-column: ${({ isVisible }) => isVisible ? '' : '1 / 4'};
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   grid-auto-rows: 1fr;
   justify-items: center;
   align-items: center;
   .equal {
-    grid-column: 2 / 6;
+    grid-column: 2 / 5;
     width: calc(100% - 3 * ${({ theme }) => theme.spaces[5]}px);
   }
 `

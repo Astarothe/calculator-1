@@ -6,10 +6,10 @@ import { btnValues } from '@/constants'
 import { Button, Wrapper } from './styled'
 import { controller } from '@/helpers'
 
-const KeypadComponent = ({ inputValue, inputChange }) => {
+const KeypadComponent = ({ inputValue, inputChange, isVisible, toggleVisible }) => {
   const dispatch = useDispatch()
 
-  const handlerClick = btn => {
+  const handlerClick = (btn, { target }) => {
     if(Number(btn) || btn === 0 || btn === '.') {
       inputValue += btn
       inputChange(inputValue)
@@ -17,20 +17,31 @@ const KeypadComponent = ({ inputValue, inputChange }) => {
       if(btn === 'C' && inputValue === '') {
         controller('CE', dispatch, inputValue)
       }
+      if(btn === '>') {
+        toggleVisible(target)
+      }
       controller(btn, dispatch, inputValue)
       inputChange('')
     }
   }
 
+  const changeDirection = btn => {
+    if (btn === '>' && !isVisible) {
+      return '<'
+    }
+
+    return btn
+  }
+
   return (
-    <Wrapper>
+    <Wrapper isVisible={isVisible}>
       {btnValues.flat().map((btn, i) => (
         <Button
           key={i}
-          onClick={() => handlerClick(btn)}
+          onClick={e => handlerClick(btn, e)}
           className={btn === '=' ? 'equal' : ''}
         >
-          {btn}
+          {changeDirection(btn)}
         </Button>),
       )}
     </Wrapper>

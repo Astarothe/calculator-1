@@ -5,18 +5,24 @@ import { useDispatch, useSelector } from 'react-redux'
 import KeypadComponent from '../Keypad'
 import { CalculatorComponent } from './styled'
 import { DisplayComponent } from '../Display'
-import { HistoryComponent } from '../History'
+import { ControlPanel } from '../ControlPanel'
+
 import { controller } from '@/helpers'
 
 const Calculator = () => {
   const dispatch = useDispatch()
   const state = useSelector(state => state.calculate)
+  const [isVisible, setIsVisible] = useState(true)
   const { num, result } = state
   const [valueFromDisplay, setValueFromDisplay] = useState(num)
 
   const handlerChange = val => {
     const pattern = /^-|[a-zа-яё]|[!@#$^&?|\\,<>{}"'`~:;[\]_]|[.()]{2}/gi
     setValueFromDisplay(val.replace(pattern, ''))
+  }
+
+  const handleClick = () => {
+    setIsVisible(bool => !bool)
   }
 
   const handleKeyDown = ({ key }) => {
@@ -45,6 +51,7 @@ const Calculator = () => {
   return (
     <CalculatorComponent
       onKeyDown={handleKeyDown}
+      isVisible={isVisible}
     >
       <DisplayComponent
         inputValue={valueFromDisplay}
@@ -54,8 +61,10 @@ const Calculator = () => {
       <KeypadComponent
         inputValue={valueFromDisplay}
         inputChange={handlerChange}
+        isVisible={isVisible}
+        toggleVisible={handleClick}
       />
-      <HistoryComponent />
+      <ControlPanel isVisible={isVisible} />
     </CalculatorComponent>
   )
 }

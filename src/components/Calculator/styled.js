@@ -9,8 +9,8 @@ export const CalculatorComponent = styled.main`
   gap: ${({ theme }) => theme.spaces[3]}px;
 
   .history {
-    grid-column: 2 / 4;
-    grid-row: 1 / 3;
+    grid-column: ${({ isVisible }) => isVisible ? '2 / 4' : ''};
+    grid-row: ${({ isVisible }) => isVisible ? '1 / 3' : ''};
     border-left: 2px solid ${({ theme }) => theme.colors.grey};
     padding: ${({ theme }) => theme.spaces[2]}px;
     color: ${({ theme }) => theme.title};
@@ -26,7 +26,7 @@ export const CalculatorComponent = styled.main`
       display: flex;
       flex-direction: column;
       row-gap: ${({ theme }) => theme.spaces[1]}px;
-      
+
       ::-webkit-scrollbar {
         width: ${({ theme }) => theme.spaces[1]}px;
         background-color: ${({ theme }) => theme.body};
@@ -41,7 +41,12 @@ export const CalculatorComponent = styled.main`
     }
   }
 
+  .none {
+    display: none;
+  }
+
   .display {
+    grid-column: ${({ isVisible }) => isVisible ? '' : '1 / 4'};
     border: none;
     border-bottom: 2px solid ${({ theme }) => theme.colors.grey};
     padding-right: ${({ theme }) => theme.spaces[4]}px;
