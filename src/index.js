@@ -1,13 +1,13 @@
 import React from 'react'
 import { createRoot } from 'react-dom/client'
+import { PersistGate } from 'redux-persist/integration/react'
 
 import { BrowserRouter } from 'react-router-dom'
 import { Provider, useSelector } from 'react-redux'
 import { ThemeProvider } from 'styled-components'
 
 import Application from '@/App'
-
-import { store } from '@/store'
+import { store, persistor } from '@/store'
 import GlobalStyles from '@/globalStyles'
 
 const Root = () => {
@@ -26,6 +26,8 @@ const container = document.getElementById('root')
 const root = createRoot(container)
 root.render(
   <Provider store={store}>
-    <Root />
+    <PersistGate loading={null} persistor={persistor}>
+      <Root />
+    </PersistGate>
   </Provider>,
 )
