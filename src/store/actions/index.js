@@ -12,6 +12,8 @@ import {
   USE_LIGHT_THEME,
   USE_DARK_THEME,
   USE_COLORFUL_THEME,
+  OPEN_BRACKETS,
+  CLOSE_BRACKETS,
 } from '@/constants'
 
 export const addition = num => ({
@@ -36,6 +38,15 @@ export const multiplications = num => ({
 
 export const signChange = num => ({
   type: SIGN_CHANGE,
+  payload: num,
+})
+
+export const openBrackets = () => ({
+  type: OPEN_BRACKETS,
+})
+
+export const closeBrackets = num => ({
+  type: CLOSE_BRACKETS,
   payload: num,
 })
 

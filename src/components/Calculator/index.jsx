@@ -17,7 +17,7 @@ const Calculator = () => {
   const [valueFromDisplay, setValueFromDisplay] = useState(num)
 
   const handlerChange = val => {
-    const pattern = /^-|[a-zа-яё]|[!@#$^&?|\\,<>{}"'`~:;[\]_]|[.()]{2}/gi
+    const pattern = /^-|[a-zа-яё]|[!@#$^&?|\\,<>{}"'`~:;[\]_()%]|[.]{2}/gi
     setValueFromDisplay(val.replace(pattern, ''))
   }
 

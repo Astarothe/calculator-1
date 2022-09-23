@@ -1,4 +1,4 @@
-import { addition, clearExpression, clearDisplay, division, equal, multiplications, subtractions, signChange, remainderOfTheDivision } from '@/store/actions'
+import { addition, clearExpression, clearDisplay, division, equal, multiplications, subtractions, signChange, remainderOfTheDivision, closeBrackets, openBrackets } from '@/store/actions'
 
 export const controller = (checked, dispatch, value) => {
   switch(checked) {
@@ -28,6 +28,12 @@ export const controller = (checked, dispatch, value) => {
       break
     case 'CE':
       dispatch(clearExpression())
+      break
+    case '(':
+      dispatch(openBrackets(value))
+      break
+    case ')':
+      dispatch(closeBrackets(value))
       break
     default:
   }

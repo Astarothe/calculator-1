@@ -1,5 +1,94 @@
-import { AddCommand, calculator, DivideCommand, MultiplyCommand, RemainderOfTheDivisionCommand, SignChangeCommand, SubtractCommand } from '@/helpers'
-import { ADD, CLEAR, CLEAR_EXPRESSION, DIVIDE, EQUAL, MULTIPLY, SUBTRACT, SIGN_CHANGE, REMAINDER_OF_THE_DIVISION, CLEAR_ALL } from '@/constants'
+import {
+  AddCommand,
+  calculator,
+  DivideCommand,
+  MultiplyCommand,
+  RemainderOfTheDivisionCommand,
+  SignChangeCommand,
+  SubtractCommand,
+} from '@/helpers'
+import {
+  ADD,
+  CLEAR,
+  CLEAR_EXPRESSION,
+  DIVIDE,
+  EQUAL,
+  MULTIPLY,
+  SUBTRACT,
+  SIGN_CHANGE,
+  REMAINDER_OF_THE_DIVISION,
+  CLEAR_ALL, OPEN_BRACKETS,
+  CLOSE_BRACKETS,
+} from '@/constants'
+
+let numbers = []
+let operands = []
+let expression = ''
+let expressions = []
+let count = 0
+
+const priority = {
+  '+': 1,
+  '-': 1,
+  '*': 2,
+  '/': 2,
+  '%': 3,
+}
+
+const createExpression = (operand = '', num = '') => {
+  expression += `${count === 0 ? calculator.value : ''} ${operand} ${num}`
+  count++
+}
+
+const getThreeSymbols = num =>
+  `${num}`.includes('.') ? Number(num.toFixed(3)) : num
+
+const calc = () => {
+  const operand = operands.pop()
+  const number = numbers.pop()
+  calculator.value = numbers.pop()
+  createExpression()
+  switch(operand) {
+    case '+':
+      calculator.executeCommand(new AddCommand(number))
+      createExpression('+', number)
+      break
+    case '-':
+      calculator.executeCommand(new SubtractCommand(number))
+      createExpression('-', number)
+      break
+    case '*':
+      calculator.executeCommand(new MultiplyCommand(number))
+      createExpression('*', number)
+      break
+    case '/':
+      calculator.executeCommand(new DivideCommand(number))
+      createExpression('/', number)
+      break
+    case '%':
+      calculator.executeCommand(new RemainderOfTheDivisionCommand(number))
+      createExpression('%', number)
+      break
+    default:
+  }
+  numbers.push(getThreeSymbols(calculator.value))
+}
+
+const checkPriority = (operand) => {
+  if (priority[operand] <= priority[operands.at(-1)]) {
+    calc()
+    checkPriority(operand)
+  } else if (operand === ')') {
+    while (operands.at(-1) !== '(') {
+      calc()
+    }
+    if (operands.at(-1) === '(') {
+      operands.pop()
+    }
+  } else {
+    operands.push(operand)
+  }
+}
 
 const DEFAULT_STATE = {
   num: '',
@@ -8,99 +97,72 @@ const DEFAULT_STATE = {
   expressions: [],
 }
 
-let operands = []
-let expression = ''
-let expressions = []
-let count = 0
-
-const createExpression = (operand, num) => {
-  expression += `${count === 0 ? calculator.value : ''} ${operand} ${num}`
-  count++
-}
-
-const checkOperands = (operand, num) => {
-  switch (operand) {
-    case '+':
-      createExpression('+', num)
-      calculator.executeCommand(new AddCommand(num))
-      break
-    case '-':
-      createExpression('-', num)
-      calculator.executeCommand(new SubtractCommand(num))
-      break
-    case '*':
-      createExpression('*', num)
-      calculator.executeCommand(new MultiplyCommand(num))
-      break
-    case '/':
-      createExpression('/', num)
-      calculator.executeCommand(new DivideCommand(num))
-      break
-    case '%':
-      createExpression('%', num)
-      calculator.executeCommand(new RemainderOfTheDivisionCommand(num))
-      break
-    default:
-
-  }
-}
-
-const isOperandsEmpty = payload => {
-  operands.length === 0 ? calculator.value = payload : checkOperands(operands.pop(), payload)
-}
-
 const calculate = (state = DEFAULT_STATE, { type, payload }) => {
   switch (type) {
     case ADD:
-      isOperandsEmpty(+payload)
-      operands.push('+')
+      numbers.push(Number(payload))
+      checkPriority('+')
       return {
         ...state,
-        result: calculator.value,
+        result: numbers.at(-1),
       }
     case SUBTRACT:
-      isOperandsEmpty(+payload)
-      operands.push('-')
+      numbers.push(Number(payload))
+      checkPriority('-')
       return {
         ...state,
-        result: calculator.value,
+        result: numbers.at(-1),
       }
     case MULTIPLY:
-      isOperandsEmpty(+payload)
-      operands.push('*')
+      numbers.push(Number(payload))
+      checkPriority('*')
       return {
         ...state,
-        result: calculator.value,
+        result: numbers.at(-1),
       }
     case DIVIDE:
-      isOperandsEmpty(+payload)
-      operands.push('/')
+      numbers.push(Number(payload))
+      checkPriority('/')
       return {
         ...state,
-        result: calculator.value.toFixed(3),
+        result: numbers.at(-1),
+      }
+    case OPEN_BRACKETS:
+      operands.push('(')
+      return {
+        ...state,
+        result: numbers.at(-1),
+      }
+    case CLOSE_BRACKETS:
+      checkPriority(')')
+      return {
+        ...state,
+        result: numbers.at(-1),
       }
     case SIGN_CHANGE:
-      calculator.executeCommand(new SignChangeCommand(+payload))
+      calculator.executeCommand(new SignChangeCommand(Number(payload)))
       return {
         ...state,
         result: calculator.value,
       }
     case REMAINDER_OF_THE_DIVISION:
-      isOperandsEmpty(+payload)
-      operands.push('%')
+      numbers.push(Number(payload))
+      checkPriority('%')
       return {
         ...state,
-        result: calculator.value,
+        result: numbers.at(-1),
       }
     case EQUAL:
-      isOperandsEmpty(+payload)
-      operands.pop()
+      numbers.push(Number(payload))
+      while (operands.length !== 0) {
+        calc()
+      }
       expressions.push(expression)
       expression = ''
       count = 0
       return {
         ...state,
-        result: +calculator.value.toFixed(3),
+        result: numbers.at(-1),
         expressions,
       }
     case CLEAR:
@@ -120,6 +182,7 @@ const calculate = (state = DEFAULT_STATE, { type, payload }) => {
       }
     case CLEAR_EXPRESSION:
       operands = []
+      numbers = []
       return {
         ...state,
         num: '',
