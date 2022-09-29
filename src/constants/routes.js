@@ -1,4 +1,4 @@
-import { HOME_PAGE_ROUTE, SETTINGS_PAGE_ROUTE } from './router'
+import { HOME_PAGE_ROUTE, HOME_PAGE_CC_ROUTE, SETTINGS_PAGE_ROUTE } from './router'
 
 export const routes = [
   {
@@ -10,5 +10,10 @@ export const routes = [
     id: 'id-1',
     name: 'Settings',
     path: SETTINGS_PAGE_ROUTE,
+  },
+  {
+    id: 'id-2',
+    name: 'HomeCC',
+    path: HOME_PAGE_CC_ROUTE,
   },
 ]

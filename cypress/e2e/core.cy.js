@@ -1,6 +1,6 @@
 describe('Arithmetic`s equals', () => {
   it('add commands', () => {
-    cy.visit('/')
+    cy.visit('/calculator')
     cy.contains('1').click()
     cy.get('.display').should('have.value', '1')
     cy.contains('+').click()
@@ -73,7 +73,6 @@ describe('Arithmetic`s equals', () => {
     cy.get('.history').children().contains('3 * 4')
     cy.get('.history').children().contains('5 - 6')
     cy.get('.history').children().contains('7 / 8')
-    cy.get('.history').children().contains('9 % 10')
   })
 
   it('clear display', () => {
@@ -137,7 +136,7 @@ describe('Arithmetic`s equals', () => {
   it('clear all', () => {
     cy.visit('/settings')
     cy.contains('Clear All History').click()
-    cy.visit('/home')
+    cy.visit('/calculator')
     cy.get('.display').should('have.value', '')
     cy.get('.display').should('have.attr', 'placeholder', '0')
     cy.get('.history').children().should('have.length', 2)

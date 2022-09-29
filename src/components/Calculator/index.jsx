@@ -70,7 +70,7 @@ const Calculator = () => {
 }
 
 CalculatorComponent.propTypes = {
-  onKeyDown: PropTypes.func.isRequired,
+  onKeyDown: PropTypes.func,
   children: PropTypes.array,
 }
 

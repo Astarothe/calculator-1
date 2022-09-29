@@ -10,7 +10,7 @@ describe('Home page', () => {
 
   it('<Keypad>', () => {
     cy.get('div>button')
-      .should('have.length', 22)
+      .should('have.length', 23)
 
     cy.get('.equal')
       .should('be.visible')
