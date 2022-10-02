@@ -23,9 +23,8 @@ import {
 
 let numbers = []
 let operands = []
-let expression = ''
+let expression = []
 let expressions = []
-let count = 0
 
 const priority = {
   '+': 1,
@@ -35,11 +34,6 @@ const priority = {
   '%': 3,
 }
 
-const createExpression = (operand = '', num = '') => {
-  expression += `${count === 0 ? calculator.value : ''} ${operand} ${num}`
-  count++
-}
-
 const getThreeSymbols = num =>
   `${num}`.includes('.') ? Number(num.toFixed(3)) : num
 
@@ -47,27 +41,21 @@ const calc = () => {
   const operand = operands.pop()
   const number = numbers.pop()
   calculator.value = numbers.pop()
-  createExpression()
   switch(operand) {
     case '+':
       calculator.executeCommand(new AddCommand(number))
-      createExpression('+', number)
       break
     case '-':
       calculator.executeCommand(new SubtractCommand(number))
-      createExpression('-', number)
       break
     case '*':
       calculator.executeCommand(new MultiplyCommand(number))
-      createExpression('*', number)
       break
     case '/':
       calculator.executeCommand(new DivideCommand(number))
-      createExpression('/', number)
       break
     case '%':
       calculator.executeCommand(new RemainderOfTheDivisionCommand(number))
-      createExpression('%', number)
       break
     default:
   }
@@ -100,41 +88,54 @@ const DEFAULT_STATE = {
 const calculate = (state = DEFAULT_STATE, { type, payload }) => {
   switch (type) {
     case ADD:
-      numbers.push(Number(payload))
+      if (payload !== '') numbers.push(Number(payload))
+      expression.push(`${payload} +`)
       checkPriority('+')
+
       return {
         ...state,
         result: numbers.at(-1),
       }
     case SUBTRACT:
-      numbers.push(Number(payload))
+      if (payload !== '') numbers.push(Number(payload))
+      expression.push(`${payload} -`)
       checkPriority('-')
+
       return {
         ...state,
         result: numbers.at(-1),
       }
     case MULTIPLY:
-      numbers.push(Number(payload))
+      if (payload !== '') numbers.push(Number(payload))
+      expression.push(`${payload} *`)
       checkPriority('*')
+
       return {
         ...state,
         result: numbers.at(-1),
       }
     case DIVIDE:
-      numbers.push(Number(payload))
+      if (payload !== '') numbers.push(Number(payload))
+      expression.push(`${payload} /`)
       checkPriority('/')
+
       return {
         ...state,
         result: numbers.at(-1),
       }
     case OPEN_BRACKETS:
       operands.push('(')
+      expression.push('(')
+
       return {
         ...state,
-        result: numbers.at(-1),
+        result: Number.isNaN(numbers.at(-1)) ? numbers.at(-1) : '',
       }
     case CLOSE_BRACKETS:
+      if (payload !== '') numbers.push(Number(payload))
+      expression.push(`${payload} )`)
       checkPriority(')')
+
       return {
         ...state,
         result: numbers.at(-1),
@@ -147,22 +148,25 @@ const calculate = (state = DEFAULT_STATE, { type, payload }) => {
       }
     case REMAINDER_OF_THE_DIVISION:
       numbers.push(Number(payload))
+      expression.push(`${payload} %`)
       checkPriority('%')
       return {
         ...state,
         result: numbers.at(-1),
       }
     case EQUAL:
-      numbers.push(Number(payload))
-      while (operands.length !== 0) {
+      if (payload !== '') numbers.push(Number(payload))
+      expression.push(payload)
+
+      while (operands.length > 0) {
         calc()
       }
-      expressions.push(expression)
-      expression = ''
-      count = 0
+      expressions.push(expression.join(' '))
+      expression = []
+
       return {
         ...state,
-        result: numbers.at(-1),
+        result: numbers.pop(),
         expressions,
       }
     case CLEAR:

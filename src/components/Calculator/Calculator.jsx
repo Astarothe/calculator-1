@@ -53,7 +53,7 @@ class CalculatorCC extends Component {
   render() {
     return (
       <CalculatorComponent
-        onkeyDown={this.handleKeyDown}
+        onKeyDown={this.handleKeyDown}
         isVisible={this.state.isVisible}
       >
         <DisplayComponentCC
@@ -78,4 +78,8 @@ function mapStateToProps({ calculate }) {
   return { num, result }
 }
 
-export default connect(mapStateToProps)(CalculatorCC)
+const mapDispatchToProps = dispatch => ({
+  dispatch,
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(CalculatorCC)
